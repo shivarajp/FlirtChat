@@ -8,21 +8,26 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.flirtchat.app.adapters.ChatAdapter;
 import com.flirtchat.app.models.MessageDataModel;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private String url = "https://flirtchat.firebaseio.com/data";
     private Firebase mFirebase;
-    private TextView tvMsg;
     private RelativeLayout rlchat;
+    private ListView lvConversation;
+    private ChatAdapter adapter;
+    private ArrayList<MessageDataModel> messages = new ArrayList<MessageDataModel>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +37,24 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Firebase.setAndroidContext(this);
         mFirebase = new Firebase(url + "/groups/mca");
-        tvMsg = (TextView) findViewById(R.id.msg);
+        lvConversation = (ListView) findViewById(R.id.lvConversation);
         rlchat = (RelativeLayout) findViewById(R.id.rlchat);
+
+        adapter = new ChatAdapter(this, messages);
+        lvConversation.setAdapter(adapter);
 
         mFirebase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 MessageDataModel msg = dataSnapshot.getValue(MessageDataModel.class);
-                tvMsg.setText(msg.getMessage());
+                messages.add(msg);
+                adapter.notifyDataSetChanged();
+                lvConversation.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        lvConversation.smoothScrollToPosition(adapter.getCount() - 1);
+                    }
+                });
                 Snackbar.make(rlchat, "Message Recieved", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
