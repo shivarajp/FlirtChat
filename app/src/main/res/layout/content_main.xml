@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlchat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rlchat"
     android:background="@drawable/bg"
+    android:orientation="vertical"
+    android:weightSum="10"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.flirtchat.app.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/lvConversation"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="8"
         android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true" />
-</RelativeLayout>
+        android:cacheColorHint="@android:color/transparent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <EditText
+            android:id="@+id/etNewMsg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8" />
+
+        <ImageView
+            android:id="@+id/ivSend"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+    </LinearLayout>
+
+</LinearLayout>

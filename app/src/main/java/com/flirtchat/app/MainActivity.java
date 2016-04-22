@@ -1,15 +1,16 @@
 package com.flirtchat.app;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -24,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     private String url = "https://flirtchat.firebaseio.com/data";
     private Firebase mFirebase;
-    private RelativeLayout rlchat;
+    private LinearLayout llchat;
     private ListView lvConversation;
     private ChatAdapter adapter;
+    private ImageView ivSend;
+    private EditText etNewMsg;
     private ArrayList<MessageDataModel> messages = new ArrayList<MessageDataModel>();
 
     @Override
@@ -38,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         mFirebase = new Firebase(url + "/groups/mca");
         lvConversation = (ListView) findViewById(R.id.lvConversation);
-        rlchat = (RelativeLayout) findViewById(R.id.rlchat);
+        llchat = (LinearLayout) findViewById(R.id.rlchat);
+        ivSend = (ImageView) findViewById(R.id.ivSend);
+        etNewMsg = (EditText) findViewById(R.id.etNewMsg);
 
         adapter = new ChatAdapter(this, messages);
         lvConversation.setAdapter(adapter);
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         lvConversation.smoothScrollToPosition(adapter.getCount() - 1);
                     }
                 });
-                Snackbar.make(rlchat, "Message Recieved", Snackbar.LENGTH_LONG)
+                Snackbar.make(llchat, "Message Recieved", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
 
@@ -81,19 +86,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
+        ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 MessageDataModel msg = new MessageDataModel();
-
                 msg.setName("Shivaraj");
-                msg.setMessage("Hi how are you");
-
+                msg.setMessage(etNewMsg.getText().toString());
                 mFirebase.push().setValue(msg);
-
                 Snackbar.make(view, "Message Sent", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
